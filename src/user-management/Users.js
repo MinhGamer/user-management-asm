@@ -1,11 +1,21 @@
-import React, { Component } from "react";
-import UserItem from "./UserItem";
+import React, { Component } from 'react';
+import UserItem from './UserItem';
 
 class Users extends Component {
+  renderUserListTable = () => {
+    return this.props.userList.map((user) => (
+      <UserItem
+        deleteUserHandler={() => this.props.deleteUserHandler(user.id)}
+        key={user.id}
+        user={user}
+      />
+    ));
+  };
+
   render() {
     return (
       <div>
-        <table className="table">
+        <table className='table'>
           <thead>
             <tr>
               <th>Name</th>
@@ -15,11 +25,7 @@ class Users extends Component {
               <th>Type</th>
             </tr>
           </thead>
-          <tbody>
-            <UserItem />
-            <UserItem />
-            <UserItem />
-          </tbody>
+          <tbody>{this.renderUserListTable()}</tbody>
         </table>
       </div>
     );
