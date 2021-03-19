@@ -48,6 +48,7 @@ class Home extends Component {
       phoneNumber: '',
       type: '',
     },
+    searchTerm: '',
   };
 
   addUserHandler = (user) => {
@@ -74,20 +75,75 @@ class Home extends Component {
     });
   };
 
-  editUserHandler = (user) => {
+  updateUserHandler = (user) => {
     console.log(user);
   };
 
   searchByNameHandler = (e) => {
     const searchTerm = e.target.value.trim().toLowerCase();
 
-    const filterUserList = DUMMY_USERS.filter((user) =>
-      user.name.toLowerCase().includes(searchTerm)
-    );
+    this.setState({
+      searchTerm,
+    });
+  };
+
+  onSubmitHandler = (e) => {
+    e.preventDefault();
+
+    const updateUserList = [...this.state.userList];
+
+    // console.log(this.state.editUser);
+    if (this.state.editUser.id) {
+      //update
+      const updateUser = this.state.editUser;
+
+      const indexUser = updateUserList.findIndex(
+        (user) => user.id === updateUser.id
+      );
+
+      if (indexUser === -1) return;
+
+      updateUserList[indexUser] = updateUser;
+
+      this.setState({
+        userList: updateUserList,
+      });
+    } else {
+      // create new one
+      const newUser = {
+        ...this.state.editUser,
+        id: Math.random().toString(),
+      };
+
+      this.setState({
+        userList: [...this.state.userList, newUser],
+      });
+    }
+
+    this.clearForm();
+  };
+
+  onChangeHandler = (e) => {
+    e.preventDefault();
+    console.log(e.target.value, e.target.name);
+
+    const { name, value } = e.target;
+
+    const updateUser = { ...this.state.editUser };
+
+    updateUser[name] = value;
 
     this.setState({
-      userList: filterUserList,
+      editUser: updateUser,
     });
+  };
+
+  clearForm = () => {
+    const clearUser = { ...this.state.editUser };
+    Object.keys(this.state.editUser).forEach((userKey) => {
+      clearUser[userKey] = '';
+    });
+    this.setState({ editUser: clearUser });
   };
 
   render() {
@@ -106,16 +162,17 @@ class Home extends Component {
         </div>
 
         <Users
+          searchTerm={this.state.searchTerm}
           deleteUserHandler={this.deleteUserHandler}
           getUserHandler={this.getUserHandler}
           userList={this.state.userList}
         />
 
-        {/* add user */}
+        {/* add user FORM */}
         <Modal
           editUser={this.state.editUser}
-          addUserHandler={this.addUserHandler}
-          editUserHandler={this.editUserHandler}
+          onSubmitHandler={this.onSubmitHandler}
+          onChangeHandler={this.onChangeHandler}
         />
       </div>
     );

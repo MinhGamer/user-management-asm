@@ -1,46 +1,46 @@
 import React, { Component } from 'react';
 
 class Modal extends Component {
-  state = {
-    user: {
-      name: '',
-      username: '',
-      email: '',
-      phoneNumber: '',
-      type: '',
-    },
-  };
+  // state = {
+  //   user: {
+  //     name: '',
+  //     username: '',
+  //     email: '',
+  //     phoneNumber: '',
+  //     type: '',
+  //   },
+  // };
 
-  onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    const updateUser = { ...this.state.user };
-    updateUser[name] = value;
-    this.setState({
-      user: updateUser,
-    });
-  };
+  // onChangeHandler = (e) => {
+  //   const { name, value } = e.target;
+  //   const updateUser = { ...this.state.user };
+  //   updateUser[name] = value;
+  //   this.setState({
+  //     user: updateUser,
+  //   });
+  // };
 
-  onSubmitHandler = (e) => {
-    e.preventDefault();
+  // onSubmitHandler = (e) => {
+  //   e.preventDefault();
 
-    let user;
-    if (this.props.editUser.id) {
-      //update user
-      user = {
-        ...this.state.user,
-      };
-      this.props.editUserHandler(user);
-    } else {
-      //add new user
-      user = {
-        ...this.state.user,
-        id: Math.random().toString(),
-      };
-      this.props.addUserHandler(user);
-    }
+  //   let user;
+  //   if (this.props.editUser.id) {
+  //     //update user
+  //     user = {
+  //       ...this.state.user,
+  //     };
+  //     this.props.updateUserHandler(user);
+  //   } else {
+  //     //add new user
+  //     user = {
+  //       ...this.state.user,
+  //       id: Math.random().toString(),
+  //     };
+  //     this.props.addUserHandler(user);
+  //   }
 
-    this.clearForm();
-  };
+  //   this.clearForm();
+  // };
 
   clearForm = () => {
     const clearUser = { ...this.state.user };
@@ -51,8 +51,7 @@ class Modal extends Component {
   };
 
   render() {
-    // console.log(this.props.editUser);
-    // console.log(this.state.user);
+    const { onSubmitHandler, onChangeHandler } = this.props;
 
     return (
       <div
@@ -75,15 +74,15 @@ class Modal extends Component {
               </button>
             </div>
             <div className='modal-body'>
-              <form onSubmit={(e) => this.onSubmitHandler(e)}>
+              <form onSubmit={onSubmitHandler}>
                 <div className='form-group'>
                   <label>Username</label>
                   <input
                     name='username'
-                    onChange={this.onChangeHandler}
+                    onChange={onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={this.state.user.username}
+                    value={this.props.editUser.username}
                   />
                 </div>
 
@@ -91,10 +90,10 @@ class Modal extends Component {
                   <label>Name</label>
                   <input
                     name='name'
-                    onChange={this.onChangeHandler}
+                    onChange={onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={this.state.user.name}
+                    value={this.props.editUser.name}
                   />
                 </div>
 
@@ -102,10 +101,12 @@ class Modal extends Component {
                   <label>Email</label>
                   <input
                     name='email'
-                    onChange={this.onChangeHandler}
+                    onChange={onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={this.state.user.email || this.props.editUser.email}
+                    value={
+                      this.props.editUser.email || this.props.editUser.email
+                    }
                   />
                 </div>
 
@@ -113,11 +114,11 @@ class Modal extends Component {
                   <label>Phone Number</label>
                   <input
                     name='phoneNumber'
-                    onChange={this.onChangeHandler}
+                    onChange={onChangeHandler}
                     type='text'
                     className='form-control'
                     value={
-                      this.state.user.phoneNumber ||
+                      this.props.editUser.phoneNumber ||
                       this.props.editUser.phoneNumber
                     }
                   />
@@ -126,9 +127,9 @@ class Modal extends Component {
                 <div className='form-group'>
                   <label>Type</label>
                   <select
-                    value={this.state.user.type || this.props.editUser.type}
+                    value={this.props.editUser.type || this.props.editUser.type}
                     name='type'
-                    onChange={this.onChangeHandler}
+                    onChange={onChangeHandler}
                     className='form-control'>
                     <option value='User'>USER</option>
                     <option value='VIP'>VIP</option>

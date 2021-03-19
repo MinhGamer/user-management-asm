@@ -3,16 +3,26 @@ import UserItem from './UserItem';
 
 class Users extends Component {
   renderUserListTable = () => {
-    const { getUserHandler, deleteUserHandler } = this.props;
+    const {
+      userList,
+      getUserHandler,
+      deleteUserHandler,
+      searchTerm,
+    } = this.props;
+    console.log('User list render', userList);
 
-    return this.props.userList.map((user) => (
-      <UserItem
-        deleteUserHandler={() => deleteUserHandler(user.id)}
-        getUserHandler={() => getUserHandler(user.id)}
-        key={user.id}
-        user={user}
-      />
-    ));
+    //filter by search term
+    //then map to render
+    return userList
+      .filter((user) => user.name.toLowerCase().includes(searchTerm))
+      .map((user) => (
+        <UserItem
+          deleteUserHandler={() => deleteUserHandler(user.id)}
+          getUserHandler={() => getUserHandler(user.id)}
+          key={user.id}
+          user={user}
+        />
+      ));
   };
 
   render() {
@@ -35,4 +45,4 @@ class Users extends Component {
   }
 }
 
-export default Users;
+export default React.memo(Users);
