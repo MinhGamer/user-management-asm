@@ -23,15 +23,37 @@ class Modal extends Component {
   onSubmitHandler = (e) => {
     e.preventDefault();
 
-    const newUser = {
-      ...this.state.user,
-      id: Math.random().toString(),
-    };
+    let user;
+    if (this.props.editUser.id) {
+      //update user
+      user = {
+        ...this.state.user,
+      };
+      this.props.editUserHandler(user);
+    } else {
+      //add new user
+      user = {
+        ...this.state.user,
+        id: Math.random().toString(),
+      };
+      this.props.addUserHandler(user);
+    }
 
-    this.props.addUserHandler(newUser);
+    this.clearForm();
+  };
+
+  clearForm = () => {
+    const clearUser = { ...this.state.user };
+    Object.keys(this.state.user).forEach((userKey) => {
+      clearUser[userKey] = '';
+    });
+    this.setState({ user: clearUser });
   };
 
   render() {
+    // console.log(this.props.editUser);
+    // console.log(this.state.user);
+
     return (
       <div
         className='modal fade'
@@ -61,6 +83,7 @@ class Modal extends Component {
                     onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
+                    value={this.state.user.username}
                   />
                 </div>
 
@@ -71,6 +94,7 @@ class Modal extends Component {
                     onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
+                    value={this.state.user.name}
                   />
                 </div>
 
@@ -81,6 +105,7 @@ class Modal extends Component {
                     onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
+                    value={this.state.user.email || this.props.editUser.email}
                   />
                 </div>
 
@@ -91,12 +116,17 @@ class Modal extends Component {
                     onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
+                    value={
+                      this.state.user.phoneNumber ||
+                      this.props.editUser.phoneNumber
+                    }
                   />
                 </div>
 
                 <div className='form-group'>
                   <label>Type</label>
                   <select
+                    value={this.state.user.type || this.props.editUser.type}
                     name='type'
                     onChange={this.onChangeHandler}
                     className='form-control'>

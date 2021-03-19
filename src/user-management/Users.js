@@ -3,9 +3,12 @@ import UserItem from './UserItem';
 
 class Users extends Component {
   renderUserListTable = () => {
+    const { getUserHandler, deleteUserHandler } = this.props;
+
     return this.props.userList.map((user) => (
       <UserItem
-        deleteUserHandler={() => this.props.deleteUserHandler(user.id)}
+        deleteUserHandler={() => deleteUserHandler(user.id)}
+        getUserHandler={() => getUserHandler(user.id)}
         key={user.id}
         user={user}
       />

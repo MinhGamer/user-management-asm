@@ -40,6 +40,14 @@ const DUMMY_USERS = [
 class Home extends Component {
   state = {
     userList: DUMMY_USERS,
+    editUser: {
+      id: '',
+      name: '',
+      username: '',
+      email: '',
+      phoneNumber: '',
+      type: '',
+    },
   };
 
   addUserHandler = (user) => {
@@ -49,7 +57,37 @@ class Home extends Component {
   };
 
   deleteUserHandler = (userId) => {
-    console.log(userId);
+    this.setState({
+      userList: this.state.userList.filter((user) => user.id !== userId),
+    });
+  };
+
+  getUserHandler = (userId) => {
+    const userIndex = this.state.userList.findIndex(
+      (user) => user.id === userId
+    );
+
+    if (userIndex === -1) return;
+
+    this.setState({
+      editUser: this.state.userList[userIndex],
+    });
+  };
+
+  editUserHandler = (user) => {
+    console.log(user);
+  };
+
+  searchByNameHandler = (e) => {
+    const searchTerm = e.target.value.trim().toLowerCase();
+
+    const filterUserList = DUMMY_USERS.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm)
+    );
+
+    this.setState({
+      userList: filterUserList,
+    });
   };
 
   render() {
@@ -58,7 +96,7 @@ class Home extends Component {
         <h1 className='display-4 text-center my-3'>User Management</h1>
 
         <div className='d-flex justify-content-between align-items-center'>
-          <Search />
+          <Search onChange={this.searchByNameHandler} />
           <button
             className='btn btn-success'
             data-toggle='modal'
@@ -69,11 +107,16 @@ class Home extends Component {
 
         <Users
           deleteUserHandler={this.deleteUserHandler}
+          getUserHandler={this.getUserHandler}
           userList={this.state.userList}
         />
 
         {/* add user */}
-        <Modal addUserHandler={this.addUserHandler} />
+        <Modal
+          editUser={this.state.editUser}
+          addUserHandler={this.addUserHandler}
+          editUserHandler={this.editUserHandler}
+        />
       </div>
     );
   }

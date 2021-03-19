@@ -4,7 +4,7 @@ class UserItem extends Component {
   render() {
     const { name, username, email, phoneNumber, type } = this.props.user;
 
-    const { deleteUserHandler } = this.props;
+    const { deleteUserHandler, getUserHandler } = this.props;
 
     return (
       <tr>
@@ -15,6 +15,7 @@ class UserItem extends Component {
         <td>{type}</td>
         <td>
           <button
+            onClick={getUserHandler}
             className='btn btn-info mr-2'
             data-toggle='modal'
             data-target='#modelIdUser'>
