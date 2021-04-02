@@ -12,19 +12,6 @@ class AddTask extends Component {
     },
   };
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (
-  //     nextProps &&
-  //     nextProps.editTask &&
-  //     nextState.task !== nextProps.editTask.task
-  //   ) {
-  //     console.log(nextState);
-
-  //     nextState.task = nextProps.editTask.task;
-  //   }
-  //   return true;
-  // }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps && nextProps.editTask) {
       this.setState({
@@ -32,6 +19,16 @@ class AddTask extends Component {
       });
     }
   }
+
+  handleSubmit = () => {
+    this.props.submitTask(this.state.editTask);
+    this.setState({
+      editTask: {
+        id: '',
+        task: '',
+      },
+    });
+  };
 
   render() {
     return (
@@ -51,10 +48,7 @@ class AddTask extends Component {
           value={this.state.editTask.task}
         />
         <button id='addItem'>
-          <i
-            className='fa fa-plus'
-            onClick={() => this.props.submitTask(this.state.editTask)}
-          />
+          <i className='fa fa-plus' onClick={this.handleSubmit} />
         </button>
       </>
     );

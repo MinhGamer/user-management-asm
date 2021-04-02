@@ -23,8 +23,6 @@ const todoListReducer = (state = initialState, action) => {
     case SUBMIT_TASK: {
       const { task } = action.payload;
 
-      console.log(task);
-
       const updateList = [...state.todoList];
 
       //check to see task have id or not
@@ -53,7 +51,7 @@ const todoListReducer = (state = initialState, action) => {
         updateList.push(newTask);
       }
 
-      return { ...state, todoList: updateList };
+      return { ...state, todoList: updateList, editTask: null };
     }
 
     case DELETE_TASK: {
