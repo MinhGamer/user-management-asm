@@ -40,14 +40,7 @@ const DUMMY_USERS = [
 class Home extends Component {
   state = {
     userList: DUMMY_USERS,
-    editUser: {
-      id: '',
-      name: '',
-      username: '',
-      email: '',
-      phoneNumber: '',
-      type: '',
-    },
+    editUser: null,
     searchTerm: '',
   };
 
@@ -75,8 +68,21 @@ class Home extends Component {
     });
   };
 
-  updateUserHandler = (user) => {
-    console.log(user);
+  updateUserHandler = (updateUser) => {
+    const userIndex = this.state.userList.findIndex(
+      (user) => user.id === updateUser.id
+    );
+
+    if (userIndex === -1) return;
+
+    const updatedUserList = [...this.state.userList];
+
+    updatedUserList[userIndex] = updateUser;
+
+    this.setState({
+      userList: updatedUserList,
+      editUser: null,
+    });
   };
 
   searchByNameHandler = (e) => {
@@ -87,64 +93,16 @@ class Home extends Component {
     });
   };
 
-  onSubmitHandler = (e) => {
-    e.preventDefault();
+  componentDidUpdate() {
+    localStorage.setItem('users', JSON.stringify(this.state.userList));
+  }
 
-    const updateUserList = [...this.state.userList];
-
-    // console.log(this.state.editUser);
-    if (this.state.editUser.id) {
-      //update
-      const updateUser = this.state.editUser;
-
-      const indexUser = updateUserList.findIndex(
-        (user) => user.id === updateUser.id
-      );
-
-      if (indexUser === -1) return;
-
-      updateUserList[indexUser] = updateUser;
-
-      this.setState({
-        userList: updateUserList,
-      });
-    } else {
-      // create new one
-      const newUser = {
-        ...this.state.editUser,
-        id: Math.random().toString(),
-      };
-
-      this.setState({
-        userList: [...this.state.userList, newUser],
-      });
-    }
-
-    this.clearForm();
-  };
-
-  onChangeHandler = (e) => {
-    e.preventDefault();
-    console.log(e.target.value, e.target.name);
-
-    const { name, value } = e.target;
-
-    const updateUser = { ...this.state.editUser };
-
-    updateUser[name] = value;
-
+  componentDidMount() {
+    const data = JSON.parse(localStorage.getItem('users'));
     this.setState({
-      editUser: updateUser,
+      userList: data,
     });
-  };
-
-  clearForm = () => {
-    const clearUser = { ...this.state.editUser };
-    Object.keys(this.state.editUser).forEach((userKey) => {
-      clearUser[userKey] = '';
-    });
-    this.setState({ editUser: clearUser });
-  };
+  }
 
   render() {
     return (
@@ -153,7 +111,9 @@ class Home extends Component {
 
         <div className='d-flex justify-content-between align-items-center'>
           <Search onChange={this.searchByNameHandler} />
+
           <button
+            onClick={() => this.setState({ editUser: null })}
             className='btn btn-success'
             data-toggle='modal'
             data-target='#modelIdUser'>
@@ -170,9 +130,9 @@ class Home extends Component {
 
         {/* add user FORM */}
         <Modal
+          addUserHandler={this.addUserHandler}
           editUser={this.state.editUser}
-          onSubmitHandler={this.onSubmitHandler}
-          onChangeHandler={this.onChangeHandler}
+          updateUserHandler={this.updateUserHandler}
         />
       </div>
     );

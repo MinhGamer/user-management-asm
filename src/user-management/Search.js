@@ -5,6 +5,7 @@ class Search extends Component {
     console.log('Search render');
     return (
       <input
+        placeholder='...search by name'
         onChange={this.props.onChange}
         type='text'
         className='form-control mb-3 w-50'

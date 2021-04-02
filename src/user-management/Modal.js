@@ -1,58 +1,70 @@
 import React, { Component } from 'react';
 
 class Modal extends Component {
-  // state = {
-  //   user: {
-  //     name: '',
-  //     username: '',
-  //     email: '',
-  //     phoneNumber: '',
-  //     type: '',
-  //   },
-  // };
+  constructor(props) {
+    super(props);
 
-  // onChangeHandler = (e) => {
-  //   const { name, value } = e.target;
-  //   const updateUser = { ...this.state.user };
-  //   updateUser[name] = value;
-  //   this.setState({
-  //     user: updateUser,
-  //   });
-  // };
+    this.closeBtn = React.createRef();
 
-  // onSubmitHandler = (e) => {
-  //   e.preventDefault();
+    this.state = {
+      user: { name: '', username: '', email: '', phoneNumber: '', type: '' },
+      isEditUser: false,
+    };
+  }
 
-  //   let user;
-  //   if (this.props.editUser.id) {
-  //     //update user
-  //     user = {
-  //       ...this.state.user,
-  //     };
-  //     this.props.updateUserHandler(user);
-  //   } else {
-  //     //add new user
-  //     user = {
-  //       ...this.state.user,
-  //       id: Math.random().toString(),
-  //     };
-  //     this.props.addUserHandler(user);
-  //   }
-
-  //   this.clearForm();
-  // };
-
-  clearForm = () => {
-    const clearUser = { ...this.state.user };
-    Object.keys(this.state.user).forEach((userKey) => {
-      clearUser[userKey] = '';
+  clearForm = (e) => {
+    this.setState({
+      user: { name: '', username: '', email: '', phoneNumber: '', type: '' },
     });
-    this.setState({ user: clearUser });
   };
 
-  render() {
-    const { onSubmitHandler, onChangeHandler } = this.props;
+  onSubmitHandler = (e) => {
+    e.preventDefault();
 
+    if (!this.state.isEditUser) {
+      //create new user
+      const newUser = { ...this.state.user, id: Math.random().toString() };
+      this.props.addUserHandler(newUser);
+    } else {
+      //update user
+      this.props.updateUserHandler(this.state.user);
+    }
+
+    this.clearForm();
+    this.closeBtn.current.click();
+  };
+
+  onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    const updateUser = { ...this.state.user };
+
+    updateUser[name] = value;
+
+    this.setState({
+      user: updateUser,
+    });
+  };
+
+  // componentDidUpdate() {
+  //   //binding data to form
+  //   if (this.props.editUser && !this.state.isEditUser) {
+  //     this.setState({
+  //       user: this.props.editUser,
+  //       isEditUser: true,
+  //     });
+  //   }
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps.editUser);
+    if (nextProps && nextProps.editUser) {
+      this.setState({
+        user: nextProps.editUser,
+      });
+    }
+  }
+
+  render() {
     return (
       <div
         className='modal fade'
@@ -64,8 +76,11 @@ class Modal extends Component {
         <div className='modal-dialog' role='document'>
           <div className='modal-content'>
             <div className='modal-header'>
-              <h5 className='modal-title'>ADD USER</h5>
+              <h5 className='modal-title'>
+                {this.props.editUser ? 'UPDATE' : 'ADD'} USER
+              </h5>
               <button
+                ref={this.closeBtn}
                 type='button'
                 className='close'
                 data-dismiss='modal'
@@ -74,67 +89,69 @@ class Modal extends Component {
               </button>
             </div>
             <div className='modal-body'>
-              <form onSubmit={onSubmitHandler}>
+              {/* form */}
+              <form onSubmit={this.onSubmitHandler}>
+                {/* username */}
                 <div className='form-group'>
                   <label>Username</label>
                   <input
                     name='username'
-                    onChange={onChangeHandler}
+                    onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={this.props.editUser.username}
+                    value={this.state.user.username}
                   />
                 </div>
 
+                {/* name */}
                 <div className='form-group'>
                   <label>Name</label>
                   <input
                     name='name'
-                    onChange={onChangeHandler}
+                    onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={this.props.editUser.name}
+                    value={this.state.user.name}
                   />
                 </div>
 
+                {/* email */}
                 <div className='form-group'>
                   <label>Email</label>
                   <input
                     name='email'
-                    onChange={onChangeHandler}
+                    onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={
-                      this.props.editUser.email || this.props.editUser.email
-                    }
+                    value={this.state.user.email}
                   />
                 </div>
 
+                {/* phone number */}
                 <div className='form-group'>
                   <label>Phone Number</label>
                   <input
                     name='phoneNumber'
-                    onChange={onChangeHandler}
+                    onChange={this.onChangeHandler}
                     type='text'
                     className='form-control'
-                    value={
-                      this.props.editUser.phoneNumber ||
-                      this.props.editUser.phoneNumber
-                    }
+                    value={this.state.user.phoneNumber}
                   />
                 </div>
 
+                {/* type */}
                 <div className='form-group'>
                   <label>Type</label>
                   <select
-                    value={this.props.editUser.type || this.props.editUser.type}
+                    value={this.state.user.type}
                     name='type'
-                    onChange={onChangeHandler}
+                    onChange={this.onChangeHandler}
                     className='form-control'>
                     <option value='User'>USER</option>
                     <option value='VIP'>VIP</option>
                   </select>
                 </div>
+
                 <button type='submit' className='btn btn-success'>
                   Submit
                 </button>
