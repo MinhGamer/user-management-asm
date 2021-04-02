@@ -1,18 +1,39 @@
-import React, { Component } from "react";
-import ItemTask from "./item-task";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import ItemTask from './item-task';
 
-export default class ListTask extends Component {
+class ListTask extends Component {
   render() {
+    const { todoList } = this.props;
+    // console.log(this.props.todoList);
     return (
       <>
-        <ul className="todo" id="todo">
-          <ItemTask />
+        {/* Uncompleted tasks */}
+        <ul className='todo' id='todo'>
+          {todoList
+            .filter((itemTask) => !itemTask.isCompleted)
+            .map((itemTask) => (
+              <ItemTask itemTask={itemTask} />
+            ))}
         </ul>
+
         {/* Completed tasks */}
-        <ul className="todo" id="completed">
-          <ItemTask />
+        <ul className='todo' id='completed'>
+          {todoList
+            .filter((itemTask) => itemTask.isCompleted)
+            .map((itemTask) => (
+              <ItemTask itemTask={itemTask} />
+            ))}
         </ul>
       </>
     );
   }
 }
+
+const mapStatetoProps = (state) => {
+  return {
+    todoList: state.todoListReducer.todoList,
+  };
+};
+
+export default connect(mapStatetoProps, null)(ListTask);
